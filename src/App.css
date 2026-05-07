@@ -1,0 +1,401 @@
+/* ============================================
+   FONTS
+   ============================================ */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/manufacturing-consent@latest/index.css");
+
+/* ============================================
+   DESIGN TOKENS
+   Spacing scale: 4 8 12 16 24 32 48 64 80 96
+   ============================================ */
+
+/* ============================================
+   GLOBAL BASE
+   ============================================ */
+html,
+body {
+  background-color: #000000;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   PAGE BACKGROUND (scroll color target)
+   ============================================ */
+.page-bg {
+  background-color: #0d0d0d; /* initial — overridden by useScrollColor */
+}
+
+/* ============================================
+   LAYOUT WRAPPER
+   ============================================ */
+.wrapper {
+  width: 100%;
+  min-height: 90vh;
+  position: relative;
+  overflow: visible;
+  background-color: transparent; /* let page-bg show through */
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px; /* Increased gap for better breathing room */
+  width: 100%;
+  padding: 0 24px;
+  z-index: 2;
+}
+
+.hero-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(168, 85, 247, 0.5),
+    transparent
+  );
+  border-radius: 2px;
+}
+
+.hero-logo {
+  width: clamp(280px, 55vw, 900px);
+  display: block;
+  filter: drop-shadow(0 0 40px rgba(117, 37, 171, 0.25));
+}
+
+.hero-subtitle-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.hero-subtitle {
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  font-size: 22px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  line-height: 2;
+  letter-spacing: 0.02em;
+  max-width: 600px; /* Limits width to form a block */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0px;
+  font-family: "bree serif", serif;
+}
+
+.hero-subtitle .purpletext {
+  color: #a855f7;
+  font-weight: 700;
+}
+
+.hero-subtitle .textgap {
+  margin-left: 6px;
+}
+
+/* ============================================
+   HERO CTA
+   ============================================ */
+.hero-cta-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.hero-cta-button {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 12px 28px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(4px);
+}
+
+.hero-cta-button:hover {
+  color: rgba(255, 255, 255, 1);
+  border-color: rgba(168, 85, 247, 0.6);
+  background: rgba(168, 85, 247, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+/* ============================================
+   SECTION BASE
+   ============================================ */
+section {
+  background-color: transparent; /* let page-bg show through */
+}
+
+/* ============================================
+   REVEAL SECTION
+   ============================================ */
+.reveal-section {
+  position: relative;
+  background-color: transparent;
+  padding: 120px 24px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+  font-family: "Bree Serif", serif;
+}
+
+.scroll-reveal-text {
+  font-family: "Bree Serif", serif;
+}
+
+.section-layout {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.reveal-container {
+  max-width: 1400px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; /* Essential for sticky to work */
+  gap: 80px;
+}
+
+.reveal-left {
+  flex: 0 0 65%;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding: clamp(40px, 8vh, 100px) 0;
+  font-size: clamp(1.6rem, 3.2vw, 2.8rem); /* Aggressive Gigantism */
+  line-height: 1.4;
+}
+
+.reveal-right {
+  flex: 0 0 25%;
+  position: relative;
+}
+
+.container {
+  position: sticky;
+  top: 25vh;
+  margin-top: clamp(40px, 8vh, 100px);
+  margin-bottom: clamp(40px, 8vh, 100px);
+}
+
+.reveal-logo-wrapper {
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: min-content;
+  transform: translateY(12px); /* Ajuste visual para alinear con el texto */
+}
+
+.reveal-logo {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 50px rgba(168, 85, 247, 0.4));
+  z-index: 2;
+}
+
+.reveal-logo-glow {
+  position: absolute;
+  width: 160%;
+  height: 160%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.final-text-container {
+  width: 100%;
+  margin-top: clamp(40px, 10vh, 100px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-title {
+  position: relative;
+  z-index: 2;
+}
+
+.section-title p {
+  font-size: 20px;
+  text-align: center;
+}
+
+.section-title .scroll-reveal-text {
+  font-size: clamp(1.8rem, 3vw, 3.2rem);
+  text-align: center;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media screen and (max-width: 992px) {
+  .reveal-container {
+    gap: 40px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hero-content {
+    gap: 16px;
+  }
+
+  .reveal-section {
+    padding: 60px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .section-layout {
+    display: contents;
+  }
+
+  .reveal-container {
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(32px, 6vh, 48px); /* Natural continuation gap */
+    width: 100%;
+  }
+
+  .reveal-left {
+    flex: 0 0 100%;
+    order: 1;
+    padding: 0;
+    font-size: 1.35rem;
+    text-align: center;
+  }
+
+  .reveal-right {
+    flex: 0 0 100%;
+    order: 2;
+    width: 100%;
+    position: static;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0;
+  }
+
+  .reveal-right .container {
+    position: static;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .reveal-logo {
+    max-width: clamp(180px, 40vw, 250px);
+  }
+
+  .final-text-container {
+    order: 3;
+    margin-top: 12px; /* Small intentional gap below logo */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .final-text-container .highlight {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    letter-spacing: 0.08em;
+    padding: 0 10px;
+  }
+}
+
+/* ============================================
+   CHAOS FOOTER TRANSITION
+   ============================================ */
+#chaos-footer {
+  position: relative;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  --jitter-intensity: 0px;
+  --glitch-width: 0px;
+  --glitch-opacity: 0;
+}
+
+.chaos-instruction {
+  opacity: 0.3;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.5em;
+  text-align: center;
+}
+
+@keyframes chaos-jitter {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(
+      var(--jitter-intensity),
+      calc(-1 * var(--jitter-intensity))
+    );
+  }
+  50% {
+    transform: translate(
+      calc(-1 * var(--jitter-intensity)),
+      var(--jitter-intensity)
+    );
+  }
+  75% {
+    transform: translate(var(--jitter-intensity), var(--jitter-intensity));
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+#chaos-footer h3,
+#chaos-footer .social-link-btn,
+#chaos-footer .chaos-logo,
+#chaos-footer .footer-bottom p,
+#chaos-footer .chaos-instruction {
+  animation: chaos-jitter 0.08s infinite linear;
+  display: inline-block;
+}
+
+#chaos-footer h3,
+#chaos-footer .footer-bottom p,
+#chaos-footer .chaos-instruction {
+  text-shadow:
+    var(--glitch-width) 0 0 rgba(255, 0, 80, var(--glitch-opacity)),
+    calc(-1 * var(--glitch-width)) 0 0 rgba(0, 255, 230, var(--glitch-opacity));
+}
+
+#chaos-footer {
+  transition: filter 0.1s ease;
+}

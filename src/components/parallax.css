@@ -1,0 +1,724 @@
+.parallax-main-container {
+  position: relative;
+  width: 100%;
+  height: 1700vh; /* Extended for better readability and scroll time */
+  overflow: visible;
+  background-color: transparent;
+  z-index: 10;
+}
+
+.parallax-viewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 50; /* Ensure terminal content is at the top of the stack */
+}
+
+.parallax-main-title {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 90%;
+  max-width: 900px;
+  text-align: center;
+  color: white;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  z-index: 10;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  font-family: "Bree Serif", serif;
+}
+
+.parallax-album {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(140px, 22vw, 320px); /* Responsive sizing */
+  height: auto;
+  opacity: 0;
+  will-change: transform;
+}
+
+.parallax-album img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  filter: contrast(1.1) brightness(0.9);
+}
+
+/* Layering: A2, A4, A6 pass in front of text (z-index > 10) */
+/* Others pass behind (z-index < 10) */
+.album-1,
+.album-3,
+.album-5 {
+  z-index: 5;
+  left: 0;
+}
+
+.album-2,
+.album-4,
+.album-6 {
+  z-index: 20;
+  left: 0;
+}
+
+@media (max-width: 768px) {
+  .parallax-main-title {
+    font-size: clamp(1.8rem, 8vw, 3rem);
+  }
+}
+
+/* ─── CHAOS LAYER ─── */
+.chaos-layer-internal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.chaos-logo-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chaos-logo {
+  display: block;
+  width: 400px;
+  height: auto;
+}
+
+.chaos-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.chaos-artifact {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 15;
+  will-change: transform, opacity;
+}
+
+/* ─── TERMINAL ATMOSPHERE ─── */
+.terminal-atmosphere-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  z-index: 5; /* Between stars (1) and viewport (50) */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+.terminal-atmosphere-overlay.visible {
+  opacity: 1;
+}
+
+/* ─── TERMINAL SYSTEM (PHASE 2 & 3) ─── */
+.crt-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.2); /* Initial scale for power-on */
+  width: min(85vw, 1000px);
+  height: 75vh;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 35;
+  background: #000000; /* Solid black for perfect contrast */
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 4px #1a1a1a,
+    0 0 80px rgba(0, 0, 0, 0.9); /* Deep shadow to pop from stars */
+  padding: 10px;
+  perspective: 1200px;
+  isolation: isolate; /* Create a new stacking context for terminal content */
+  z-index: 100; /* Highest priority */
+  transition:
+    opacity 0.2s,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.3s;
+  will-change: transform, filter, opacity;
+}
+
+.crt-tilt-layer {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.crt-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, #0a0a0a 0%, #000000 100%);
+  border-radius: 4px;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  box-shadow:
+    inset 0 0 60px rgba(0, 255, 136, 0.1),
+    0 0 20px rgba(0, 255, 136, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 24px; /* Slightly reduced padding */
+  gap: 0; /* Remove flex gap to control manually with margins */
+  transform: rotateX(2deg) scale(0.99);
+  transition: transform 0.3s ease;
+  justify-content: flex-start; /* Ensure top alignment */
+  pointer-events: auto;
+}
+
+.crt-screen.glitch {
+  animation: crt-glitch 0.1s steps(2) infinite;
+}
+.reboot-sequence p {
+  font-family: "Space Mono", monospace;
+}
+
+.terminal-layout .terminal-left .terminal-header {
+  font-family: "Space Mono", monospace;
+}
+
+.terminal-layout .terminal-left .terminal-body {
+  font-family: "Space Mono", monospace;
+}
+
+.glitch-transition,
+.global-glitch-active {
+  animation: crt-glitch-heavy 0.08s steps(2) infinite !important;
+  filter: contrast(1.5) brightness(1.5) hue-rotate(90deg) !important;
+}
+
+@keyframes crt-glitch {
+  0% {
+    transform: rotateX(2deg) scale(0.99) translate(0);
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    transform: rotateX(2deg) scale(0.99) translate(-1px, 1px);
+    filter: hue-rotate(10deg);
+  }
+  40% {
+    transform: rotateX(2deg) scale(0.99) translate(1px, -1px);
+  }
+  60% {
+    transform: rotateX(2deg) scale(0.99) translate(-1px, -1px);
+  }
+  80% {
+    transform: rotateX(2deg) scale(0.99) translate(1px, 1px);
+  }
+  100% {
+    transform: rotateX(2deg) scale(0.99) translate(0);
+  }
+}
+
+@keyframes crt-glitch-heavy {
+  0% {
+    transform: rotateX(2deg) scale(0.99) translate(0);
+  }
+  20% {
+    transform: rotateX(2deg) scale(0.99) translate(-6px, 4px) skewX(5deg);
+  }
+  40% {
+    transform: rotateX(2deg) scale(0.99) translate(6px, -4px) skewX(-5deg);
+  }
+  60% {
+    transform: rotateX(2deg) scale(0.99) translate(-6px, -4px);
+  }
+  80% {
+    transform: rotateX(2deg) scale(0.99) translate(6px, 4px);
+  }
+  100% {
+    transform: rotateX(2deg) scale(0.99) translate(0);
+  }
+}
+
+/* Scanlines Effect */
+.crt-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.3;
+}
+
+/* CRT Screen Glow overlay */
+.crt-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Phase 2: Reboot */
+.reboot-sequence {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.crt-line {
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+  margin: 0 0 6px 0; /* Uniform small gap */
+  letter-spacing: 0.05em;
+  transform: translateY(8px);
+  opacity: 0;
+  transition:
+    transform 0.1s ease-out,
+    opacity 0.1s ease-out;
+}
+
+/* Phase 3: Final UI */
+.terminal-main-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  height: 100%;
+  gap: 24px;
+}
+
+.terminal-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Changed from space-between */
+  gap: 16px; /* Controlled gap between blocks */
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  padding: 24px;
+  background: rgba(0, 255, 136, 0.03);
+}
+
+.terminal-left > * {
+  opacity: 0;
+  animation: crt-slide-in 0.15s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+.terminal-header {
+  animation-delay: 0.1s !important;
+}
+.terminal-body {
+  animation-delay: 0.15s !important;
+}
+.terminal-socials {
+  animation-delay: 0.2s !important;
+}
+
+@keyframes crt-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.terminal-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  background: rgba(0, 255, 136, 0.02);
+  overflow: hidden;
+  position: relative;
+}
+
+.logo-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 20px;
+  gap: 30px;
+}
+
+.main-logo {
+  transition: filter 0.1s;
+}
+
+.hidden-logo {
+  display: none !important;
+}
+
+.main-logo.hidden {
+  /* Instead of hiding, maybe just add a slight glitch effect or keep it visible */
+  animation: glitch-flicker 0.1s 1;
+}
+
+.social-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+
+.social-icon-wrapper.visible {
+  opacity: 1;
+  animation: glitch-flicker 0.1s 1;
+}
+
+.social-icon-wrapper svg {
+  width: 130px;
+  height: 130px;
+  color: #00ff88;
+  filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.5));
+}
+
+.social-icon-wrapper p {
+  color: #00ff88;
+  font-family: "Space Mono", monospace;
+  font-size: 1.1rem;
+  margin-top: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  opacity: 0.9;
+}
+
+@keyframes glitch-flicker {
+  0% {
+    transform: translate(0);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(-2px, 2px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(2px, -2px);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translate(-2px, -2px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(0);
+    opacity: 1;
+  }
+}
+
+.terminal-header {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #00ff88;
+  letter-spacing: 0.2em;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+.terminal-body {
+  font-family: "Courier New", Courier, monospace;
+  color: #00ff88;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.terminal-body p {
+  margin: 0 0 8px 0; /* Tight lines */
+}
+
+.terminal-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.terminal-link {
+  color: #00ff88;
+  text-decoration: none;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
+  opacity: 0;
+  animation: crt-slide-in 0.1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+}
+
+.terminal-link-inner {
+  display: inline-block;
+  transition: all 0.1s ease-out;
+  transform-origin: center left;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.terminal-socials > .terminal-link:nth-child(1) {
+  animation-delay: 0.25s;
+}
+.terminal-socials > .terminal-link:nth-child(2) {
+  animation-delay: 0.28s;
+}
+.terminal-socials > .terminal-link:nth-child(3) {
+  animation-delay: 0.31s;
+}
+.terminal-socials > .terminal-link:nth-child(4) {
+  animation-delay: 0.34s;
+}
+.terminal-socials > .terminal-link:nth-child(5) {
+  animation-delay: 0.37s;
+}
+.terminal-socials > .terminal-link:nth-child(6) {
+  animation-delay: 0.4s;
+}
+.terminal-socials > .terminal-link:nth-child(7) {
+  animation-delay: 0.43s;
+}
+.terminal-socials > .terminal-link:nth-child(8) {
+  animation-delay: 0.46s;
+}
+
+.terminal-link:hover .terminal-link-inner {
+  background: #00ff88;
+  color: #000;
+  padding-left: 5px;
+  transform: rotateX(2deg) rotateY(3deg) scale(1.02);
+}
+
+.terminal-command-btn {
+  color: #00ff88;
+  font-family: "Courier New", Courier, monospace;
+  cursor: pointer;
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(0, 255, 136, 0.3);
+  animation-delay: 1s !important; /* Pause before showing command */
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-command-btn:hover .terminal-link-inner {
+  background: #00ff88;
+  color: #000;
+  padding-left: 5px;
+  transform: rotateX(2deg) rotateY(3deg) scale(1.02);
+}
+
+.terminal-qr-wrapper {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: fit-content;
+}
+
+
+
+.terminal-qr-link {
+  display: block;
+  width: fit-content;
+}
+
+.terminal-qr-label {
+  color: #00ff88;
+  font-family: "Space Mono", monospace;
+  font-size: 0.85rem;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.terminal-qr-code {
+  width: 160px;
+  height: 160px;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  /* Apply a slight green CRT tint while keeping it scannable */
+  filter: brightness(0.9) contrast(1.1) sepia(50%) hue-rotate(100deg);
+  image-rendering: crisp-edges;
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.terminal-qr-code:hover {
+  filter: brightness(1.1) contrast(1.2) sepia(0%);
+  border-color: #00ff88;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+/* Command Mode */
+.command-mode {
+  padding: 40px;
+  font-family: "Courier New", Courier, monospace;
+  color: #00ff88;
+}
+
+.command-mode > * {
+  opacity: 0;
+  animation: crt-slide-in 0.15s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.command-back {
+  cursor: pointer;
+  margin-bottom: 30px;
+  animation-delay: 0.1s;
+  display: inline-block;
+  padding: 4px 8px;
+  margin-left: -8px; /* Offset the padding to keep text aligned */
+}
+
+.command-back:hover .terminal-link-inner {
+  background: #00ff88;
+  color: #000;
+  padding-left: 13px; /* 8px base padding + 5px sliding effect */
+  transform: rotateX(2deg) rotateY(3deg) scale(1.02);
+}
+
+.command-input-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation-delay: 0.2s;
+}
+
+.command-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #00ff88;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.command-output {
+  margin-top: 20px;
+  color: rgba(0, 255, 136, 0.8);
+  white-space: pre-wrap;
+  animation-delay: 0.1s;
+}
+
+/* ─── FOOTER (LEGACY) ─── */
+.parallax-footer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(600px, 90vw);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.pf-logo {
+  color: #ffffff;
+  font-size: 3rem;
+  letter-spacing: 0.4em;
+}
+
+/* ─── TERMINAL MOBILE LAYOUT ─── */
+@media (max-width: 768px) {
+  .terminal-layout {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+    padding-bottom: 24px;
+  }
+
+  .terminal-left {
+    width: 100%;
+    padding: 16px 12px;
+  }
+
+  .terminal-right {
+    height: auto;
+    min-height: auto;
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+
+  .logo-container {
+    height: auto;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .social-icon-wrapper {
+    display: none !important;
+  }
+
+  .main-logo {
+    width: 150px !important;
+    height: auto !important;
+  }
+}
