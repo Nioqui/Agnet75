@@ -15,10 +15,6 @@ export default defineConfig({
       },
     }),
   ],
-  server: {
-    host: true,
-    allowedHosts: true,
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
