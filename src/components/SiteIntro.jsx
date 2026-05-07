@@ -47,7 +47,7 @@ const SiteIntro = ({ onComplete }) => {
             <p>
               Nothing in the Jester Universe is by chance. Everything is a clue.
             </p>
-            <p>put the music for a better experience.</p>
+            <p>Turn on the audio for a better experience.</p>
           </div>
         </div>
       </div>
