@@ -6,32 +6,39 @@ const SystemAudio = () => {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [volume, setVolume] = useState(0.12);
   const [isSfxEnabled, setIsSfxEnabled] = useState(soundManager.enabled);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const audioRef = useRef(null);
   const barRef = useRef(null);
 
   // Example tracks - User should replace these with local paths or actual assets
   const tracks = [
-    { id: "01", title: "Entranced", src: "../../public/audio/music/1.Agnet 75 - Entranced.mp3" },
+    {
+      id: "01",
+      title: "Entranced",
+      src: `${import.meta.env.BASE_URL}audio/music/1.Agnet 75 - Entranced.mp3`,
+    },
     {
       id: "02",
       title: "Achromahedonia",
-      src: "../../public/audio/music/2.Agnet 75 - Achromahedonia.mp3",
+      src: `${import.meta.env.BASE_URL}audio/music/2.Agnet 75 - Achromahedonia.mp3`,
     },
     {
       id: "03",
       title: "Farewell",
-      src: "../../public/audio/music/3.Agnet 75 - Farewell.mp3",
+      src: `${import.meta.env.BASE_URL}audio/music/3.Agnet 75 - Farewell.mp3`,
     },
   ];
 
   useEffect(() => {
     const tryPlay = () => {
       if (audioRef.current) {
-        audioRef.current.play().then(() => {
-          document.removeEventListener("click", tryPlay);
-        }).catch(() => {});
+        audioRef.current
+          .play()
+          .then(() => {
+            document.removeEventListener("click", tryPlay);
+          })
+          .catch(() => {});
       }
     };
     audioRef.current.play().catch(() => {
@@ -105,11 +112,11 @@ const SystemAudio = () => {
 
   return (
     <div className="system-audio-container">
-        <audio
-          ref={audioRef}
-          src={tracks[currentTrack].src}
-          onEnded={handleTrackEnded}
-        />
+      <audio
+        ref={audioRef}
+        src={tracks[currentTrack].src}
+        onEnded={handleTrackEnded}
+      />
 
       <div className="system-audio-wrapper">
         <div className="audio-line" onClick={() => setIsMuted((prev) => !prev)}>
@@ -124,7 +131,9 @@ const SystemAudio = () => {
 
         <div className="audio-line" onClick={nextTrack}>
           <span className="audio-label">TRACK:</span>
-          <span className="audio-value">{tracks[currentTrack].id} - {tracks[currentTrack].title}</span>
+          <span className="audio-value">
+            {tracks[currentTrack].id} - {tracks[currentTrack].title}
+          </span>
         </div>
 
         <div

@@ -148,14 +148,14 @@ class TerminalEngine {
       case "jester":
         this.triggerEvent({
           type: "play-audio",
-          payload: encodeURI("/audio/Jester Laugh Reverb.mp3"),
+          payload: `${import.meta.env.BASE_URL}audio/Jester Laugh Reverb.mp3`,
         });
         return ">>...";
 
       case "salchichongo":
         this.triggerEvent({
           type: "play-audio",
-          payload: encodeURI("/audio/sorpresa.mp3"),
+          payload: `${import.meta.env.BASE_URL}audio/sorpresa.mp3`,
         });
         return ">> tontopoia";
 
