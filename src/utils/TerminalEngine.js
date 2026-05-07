@@ -15,14 +15,15 @@ class TerminalEngine {
       decodedKeywords: new Set(),
     };
 
-    this.messages = [
+    this.mailbox = [
       ">> MESSAGE ARCHIVE: 0x1A4",
       "The static is getting louder. I can see the wings shifting in the code.",
-      "base64 sequence identified: cGlkaW1h",
+      "Binary sequence identified: 11110000 10011111 10100110 10001011",
       "--------------------------",
       ">> MESSAGE ARCHIVE: 0x2B9",
-      "They say the court was abandoned in '98. The ghosts of pidima still play.",
-      "The orange sphere is the only key left in this circuit.",
+      "You can still smell the rubber burnt into the court.",
+      "A familiar squeak echoes in the paint.",
+      "Base64 sequence identified: cGlkaW1h",
       "--------------------------",
       ">> MESSAGE ARCHIVE: 0x3C1",
       "Everything is a loop. A jester's laugh is the final sound before the reboot.",
@@ -45,14 +46,14 @@ class TerminalEngine {
     switch (command) {
       case "help":
         return this.handleHelp();
-      case "messages":
-        return this.handleMessages();
+      case "mailbox":
+        return this.handleMailbox();
       case "decode":
         return this.handleDecode(args);
       case "execute":
         return this.handleExecute(args);
       default:
-        return ">> error: command not recognized";
+        return "Unknown command. Type 'help' to see available commands.";
     }
   }
 
@@ -61,15 +62,15 @@ class TerminalEngine {
       ">> command list",
       "",
       "help        → shows available commands",
-      "messages    → opens mailbox / message archive",
+      "mailbox    → opens mailbox / message archive",
       "decode      → decodes encoded data (binary / base64)",
       "execute     → runs system actions using flags (--command)",
     ].join("\n");
   }
 
-  handleMessages() {
+  handleMailbox() {
     this.state.discoveredPidima = true;
-    return this.messages.join("\n");
+    return this.mailbox.join("\n");
   }
 
   handleDecode(args) {
