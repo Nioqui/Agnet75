@@ -179,7 +179,12 @@ const Parallax = () => {
           }
 
           // --- GLITCH EFFECT ---
-          if (!isMobile && progress >= 0.65 && Math.random() > 0.97 && screenRef.current) {
+          if (
+            !isMobile &&
+            progress >= 0.65 &&
+            Math.random() > 0.97 &&
+            screenRef.current
+          ) {
             screenRef.current.classList.add("glitch");
             gsap.killTweensOf(screenRef.current);
             gsap.delayedCall(0.12, () => {
@@ -283,7 +288,12 @@ const Parallax = () => {
               }
 
               // Phase Glitch Transition (very short flicker between reboot and UI)
-              if (!isMobile && progress >= 0.755 && progress <= 0.765 && screenRef.current) {
+              if (
+                !isMobile &&
+                progress >= 0.755 &&
+                progress <= 0.765 &&
+                screenRef.current
+              ) {
                 screenRef.current.classList.add("glitch-transition");
               } else if (screenRef.current) {
                 screenRef.current.classList.remove("glitch-transition");
@@ -506,7 +516,7 @@ const Parallax = () => {
                         onMouseEnter={() => soundManager.playHover()}
                       >
                         <span className="terminal-link-inner">
-                          &gt; volver al menu
+                          &gt; main menu
                         </span>
                       </div>
                       <div className="command-input-line">
