@@ -207,19 +207,19 @@ const Parallax = () => {
               titleOpacity = 1;
 
             if (progress < holdStart) {
-              titleY = -60 + (progress / holdStart) * 110;
+              titleY = -60 + (progress / holdStart) * 60;
             } else if (progress < holdEnd) {
-              titleY = 50;
+              titleY = 0;
             } else {
               const t = Math.max(
                 0,
                 Math.min(1, (progress - holdEnd) / (titleExitEnd - holdEnd)),
               );
               const easeT = titleEase(t);
-              titleY = 50 + easeT * -300;
+              titleY = 0 + easeT * -190;
               titleOpacity = 1 - easeT;
             }
-            titleRef.current.style.transform = `translate(-50%, ${titleY}vh)`;
+            titleRef.current.style.transform = `translate(-50%, calc(-50% + ${titleY}vh))`;
             titleRef.current.style.opacity = titleOpacity;
           }
 

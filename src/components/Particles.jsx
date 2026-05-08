@@ -182,12 +182,27 @@ const Particles = ({
 
     const particles = new Mesh(gl, { mode: gl.POINTS, geometry, program });
 
-    let animationFrameId;
+    let rafId;
     let lastTime = performance.now();
     let elapsed = 0;
+    let isVisible = false;
+
+    const startLoop = () => {
+      if (rafId) return;
+      lastTime = performance.now();
+      rafId = requestAnimationFrame(update);
+    };
+
+    const stopLoop = () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    };
 
     const update = t => {
-      animationFrameId = requestAnimationFrame(update);
+      if (!isVisible) return;
+
       const delta = t - lastTime;
       lastTime = t;
       elapsed += delta * speed;
@@ -209,16 +224,33 @@ const Particles = ({
       }
 
       renderer.render({ scene: particles, camera });
+      rafId = requestAnimationFrame(update);
     };
 
-    animationFrameId = requestAnimationFrame(update);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (entry.isIntersecting) {
+          startLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(container);
+
+    const rect = container.getBoundingClientRect();
+    isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+    if (isVisible) startLoop();
 
     return () => {
+      observer.disconnect();
+      stopLoop();
       window.removeEventListener('resize', resize);
       if (moveParticlesOnHover) {
         container.removeEventListener('mousemove', handleMouseMove);
       }
-      cancelAnimationFrame(animationFrameId);
       if (container.contains(gl.canvas)) {
         container.removeChild(gl.canvas);
       }

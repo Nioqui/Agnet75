@@ -19,7 +19,7 @@
 
 .parallax-main-title {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
   width: 90%;
   max-width: 900px;

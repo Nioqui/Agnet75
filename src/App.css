@@ -1,7 +1,6 @@
 /* ============================================
    FONTS
    ============================================ */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
 @import url("https://cdn.jsdelivr.net/npm/@fontsource/manufacturing-consent@latest/index.css");
@@ -18,7 +17,6 @@ html,
 body {
   background-color: #000000;
   margin: 0;
-  font-family: "Inter", sans-serif;
   color: #fff;
   -webkit-font-smoothing: antialiased;
 }
