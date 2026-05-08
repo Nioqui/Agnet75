@@ -1,7 +1,7 @@
 .parallax-main-container {
   position: relative;
   width: 100%;
-  height: 1700vh; /* Extended for better readability and scroll time */
+  height: 1200dvh; /* Extended for better readability and scroll time */
   overflow: visible;
   background-color: transparent;
   z-index: 10;
@@ -11,7 +11,7 @@
   position: sticky;
   top: 0;
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   pointer-events: none;
   overflow: hidden;
   z-index: 50; /* Ensure terminal content is at the top of the stack */
@@ -75,6 +75,10 @@
   .parallax-main-title {
     font-size: clamp(1.8rem, 8vw, 3rem);
   }
+
+  .parallax-album {
+    will-change: auto;
+  }
 }
 
 /* ─── CHAOS LAYER ─── */
@@ -118,7 +122,6 @@
   color: #ffffff;
   text-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
   opacity: 0;
-  will-change: transform, opacity;
 }
 
 .chaos-artifact {
@@ -127,7 +130,6 @@
   left: 0;
   opacity: 0;
   z-index: 15;
-  will-change: transform, opacity;
 }
 
 /* ─── TERMINAL ATMOSPHERE ─── */
@@ -146,7 +148,6 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: opacity;
 }
 
 .terminal-atmosphere-overlay.visible {
@@ -232,14 +233,19 @@
   filter: contrast(1.5) brightness(1.5) hue-rotate(90deg) !important;
 }
 
+@media (max-width: 768px) {
+  .glitch-transition,
+  .global-glitch-active {
+    filter: none !important;
+  }
+}
+
 @keyframes crt-glitch {
   0% {
     transform: rotateX(2deg) scale(0.99) translate(0);
-    filter: hue-rotate(0deg);
   }
   20% {
     transform: rotateX(2deg) scale(0.99) translate(-1px, 1px);
-    filter: hue-rotate(10deg);
   }
   40% {
     transform: rotateX(2deg) scale(0.99) translate(1px, -1px);
@@ -510,8 +516,6 @@
   display: inline-block;
   transition: all 0.1s ease-out;
   transform-origin: center left;
-  will-change: transform;
-  backface-visibility: hidden;
 }
 
 .terminal-socials > .terminal-link:nth-child(1) {
@@ -572,8 +576,6 @@
   justify-content: flex-start;
   width: fit-content;
 }
-
-
 
 .terminal-qr-link {
   display: block;

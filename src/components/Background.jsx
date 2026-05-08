@@ -1,17 +1,17 @@
 import Particles from "./Particles";
 
 function Background() {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   return (
     <div
       className="hero-background-mask"
       style={{
         width: "100%",
-        height: "110vh",
+        height: "110dvh",
         position: "absolute",
         top: 0,
         left: 0,
         zIndex: 0,
-        /* Refined Symmetric Mask: Fading edges and curved corners */
         maskImage: `
           radial-gradient(ellipse 35% 15% at 0% 0%, transparent 0%, black 100%),
           radial-gradient(ellipse 35% 15% at 100% 0%, transparent 0%, black 100%),
@@ -32,7 +32,7 @@ function Background() {
     >
       <Particles
         particleColors={["#ffffff", "#ffffff"]}
-        particleCount={400}
+        particleCount={isMobile ? 50 : 400}
         particleSpread={10}
         speed={0.2}
         particleBaseSize={100}

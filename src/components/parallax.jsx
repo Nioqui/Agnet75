@@ -13,7 +13,6 @@ import Album3 from "../assets/images/albumes/Jesters Pact.png";
 import Album4 from "../assets/images/albumes/Opaqueness1.png";
 import Album5 from "../assets/images/albumes/Tropical Asymetrical Forest (Cover).png";
 import Album6 from "../assets/images/albumes/Ulafi Cover art.png";
-import QRCode from "../assets/images/Agnet_Linktree_QR.png";
 import InstagramIcon from "../assets/svgs/instagram.jsx";
 import SpotifyIcon from "../assets/svgs/spotify.jsx";
 import YoutubeIcon from "../assets/svgs/youtube.jsx";
@@ -23,7 +22,6 @@ import BandcampIcon from "../assets/svgs/bandcamp.jsx";
 import FacebookIcon from "../assets/svgs/facebook.jsx";
 import KofiIcon from "../assets/svgs/kofi.jsx";
 import ConsoleIcon from "../assets/svgs/console.jsx";
-import LinktreeIcon from "../assets/svgs/linktree.jsx";
 import soundManager from "../utils/SoundManager";
 import TerminalEngine from "../utils/TerminalEngine";
 import TwitchIcon from "../assets/svgs/twitch.jsx";
@@ -95,7 +93,11 @@ const Parallax = () => {
     tiltRef.current.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
   };
 
+  const bgRenderRef = useRef(null);
   const glitchTimeoutRef = useRef(null);
+  const isTouchDevice = useRef(
+    typeof window !== "undefined" && "ontouchstart" in window,
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -138,6 +140,14 @@ const Parallax = () => {
       { offset: 0.25, speed: 2.8, x: "22%" }, //A6 ulafi
     ];
 
+    const isMobile = window.innerWidth < 768;
+    const titleEase = gsap.parseEase("power2.inOut");
+    let cachedWidth = window.innerWidth;
+    const onResize = () => {
+      cachedWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", onResize);
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: containerRef.current,
@@ -149,15 +159,15 @@ const Parallax = () => {
           progressRef.current = progress;
 
           // --- PHASE CONTROL ---
-          if (progress < 0.45) chaosState.phase = "off";
-          else if (progress < 0.5) chaosState.phase = "warmup";
-          else if (progress < 0.8) chaosState.phase = "active";
+          if (progress < 0.48) chaosState.phase = "off";
+          else if (progress < 0.52) chaosState.phase = "warmup";
+          else if (progress < 0.65) chaosState.phase = "active";
           else chaosState.phase = "shutdown";
 
           // --- TERMINAL PHASE SWITCHING ---
           let currentPhase = "hidden";
-          if (progress >= 0.92) currentPhase = "ui";
-          else if (progress >= 0.8) currentPhase = "reboot";
+          if (progress >= 0.76) currentPhase = "ui";
+          else if (progress >= 0.65) currentPhase = "reboot";
 
           if (currentPhase !== phaseRef.current) {
             phaseRef.current = currentPhase;
@@ -165,7 +175,7 @@ const Parallax = () => {
           }
 
           // --- GLITCH EFFECT ---
-          if (progress >= 0.8 && Math.random() > 0.97 && screenRef.current) {
+          if (progress >= 0.65 && Math.random() > 0.97 && screenRef.current) {
             screenRef.current.classList.add("glitch");
             gsap.killTweensOf(screenRef.current);
             gsap.delayedCall(0.12, () => {
@@ -175,10 +185,17 @@ const Parallax = () => {
           }
 
           // --- STAR FREEZE ---
-          if (progress > 0.85) {
+          if (progress > 0.7) {
             document.body.classList.add("stars-static");
           } else {
             document.body.classList.remove("stars-static");
+          }
+
+          // --- THEME COLOR ---
+          const themeColor = progress < 0.48 ? "#0d0d0d" : progress < 0.65 ? "#1a0b2e" : "#000000";
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta && meta.getAttribute("content") !== themeColor) {
+            meta.setAttribute("content", themeColor);
           }
 
           // --- TITLE (0.15 → 0.6) ---
@@ -190,16 +207,16 @@ const Parallax = () => {
               titleOpacity = 1;
 
             if (progress < holdStart) {
-              titleY = -60 + (progress / holdStart) * 105;
+              titleY = -60 + (progress / holdStart) * 110;
             } else if (progress < holdEnd) {
-              titleY = 45;
+              titleY = 50;
             } else {
               const t = Math.max(
                 0,
                 Math.min(1, (progress - holdEnd) / (titleExitEnd - holdEnd)),
               );
-              const easeT = gsap.parseEase("power2.inOut")(t);
-              titleY = 45 + easeT * -225;
+              const easeT = titleEase(t);
+              titleY = 50 + easeT * -300;
               titleOpacity = 1 - easeT;
             }
             titleRef.current.style.transform = `translate(-50%, ${titleY}vh)`;
@@ -208,27 +225,35 @@ const Parallax = () => {
 
           // --- CHAOS (0.45 → 0.80) ---
           if (chaosRef.current) {
-            const cIn = Math.max(0, Math.min(1, (progress - 0.45) / 0.1));
-            const cOut = Math.max(0, Math.min(1, (progress - 0.75) / 0.05));
+            const cIn = Math.max(0, Math.min(1, (progress - 0.48) / 0.08));
+            const cOut = Math.max(0, Math.min(1, (progress - 0.6) / 0.05));
             const cOpacity = Math.pow(cIn, 0.4) * (1 - Math.pow(cOut, 2.5));
             chaosRef.current.style.opacity = cOpacity;
 
             if (chaosLogoRef.current) {
               const intensity = cOpacity;
-              const logoFlicker = Math.random() < 0.9 * intensity ? 0 : 1;
-              const jx = (Math.random() - 0.5) * 8 * intensity;
-              const jy = (Math.random() - 0.5) * 8 * intensity;
-              const jr = (Math.random() - 0.5) * 2 * intensity;
-              const js = 1 + (Math.random() - 0.5) * 0.04 * intensity;
-              chaosLogoRef.current.style.opacity = cOpacity * logoFlicker;
-              chaosLogoRef.current.style.transform = `translate(-50%, -50%) translate(${jx}px, ${jy}px) rotate(${jr}deg) scale(${js})`;
+              if (isMobile) {
+                const jx = (Math.random() - 0.5) * 3 * intensity;
+                const jy = (Math.random() - 0.5) * 3 * intensity;
+                const js = 1 + (Math.random() - 0.5) * 0.02 * intensity;
+                chaosLogoRef.current.style.opacity = cOpacity;
+                chaosLogoRef.current.style.transform = `translate(-50%, -50%) translate(${jx}px, ${jy}px) scale(${js})`;
+              } else {
+                const logoFlicker = Math.random() < 0.9 * intensity ? 0 : 1;
+                const jx = (Math.random() - 0.5) * 8 * intensity;
+                const jy = (Math.random() - 0.5) * 8 * intensity;
+                const jr = (Math.random() - 0.5) * 2 * intensity;
+                const js = 1 + (Math.random() - 0.5) * 0.04 * intensity;
+                chaosLogoRef.current.style.opacity = cOpacity * logoFlicker;
+                chaosLogoRef.current.style.transform = `translate(-50%, -50%) translate(${jx}px, ${jy}px) rotate(${jr}deg) scale(${js})`;
+              }
             }
           }
 
           // --- TERMINAL / CRT (0.80 → 1.00) ---
           if (collapseRef.current) {
-            if (progress >= 0.8) {
-              const tProgress = (progress - 0.8) / 0.05; // Quick entry window
+            if (progress >= 0.65) {
+              const tProgress = (progress - 0.65) / 0.04; // Quick entry window
               const scale =
                 tProgress < 1
                   ? 0.3 + Math.sin(tProgress * Math.PI * 0.5) * 0.75 // Scale with overshoot
@@ -241,7 +266,7 @@ const Parallax = () => {
               collapseRef.current.style.pointerEvents = "all";
 
               if (currentPhase === "reboot") {
-                const rebootProgress = (progress - 0.8) / 0.12;
+                const rebootProgress = (progress - 0.65) / 0.11;
                 const appearGates = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6];
                 const disappearGates = [
                   0.75, 0.77, 0.79, 0.81, 0.83, 0.85, 0.87,
@@ -264,7 +289,7 @@ const Parallax = () => {
               }
 
               // Phase Glitch Transition (very short flicker between reboot and UI)
-              if (progress >= 0.915 && progress <= 0.925 && screenRef.current) {
+              if (progress >= 0.755 && progress <= 0.765 && screenRef.current) {
                 screenRef.current.classList.add("glitch-transition");
               } else if (screenRef.current) {
                 screenRef.current.classList.remove("glitch-transition");
@@ -283,9 +308,8 @@ const Parallax = () => {
               0,
               Math.min(1, (progress - data.offset) * data.speed),
             );
-            const screenW = window.innerWidth;
             const xPercent = parseFloat(data.x);
-            const margin = screenW < 768 ? 20 : 5;
+            const margin = isMobile ? 20 : 5;
             const responsiveX = margin + (xPercent / 100) * (100 - 2 * margin);
 
             const y = 130 + (-180 - 130) * adjustedProgress;
@@ -293,6 +317,9 @@ const Parallax = () => {
             album.style.opacity =
               adjustedProgress > 0 && adjustedProgress < 1 ? 1 : 0;
           });
+
+          // --- BACKGROUND RENDER ---
+          bgRenderRef.current?.(progress);
         },
       });
       const errors = {
@@ -312,61 +339,69 @@ const Parallax = () => {
         ],
       };
 
+      let spawnCount = 0;
       const spawnElement = () => {
-        if (chaosState.phase === "active") {
-          const isError = Math.random() > 0.4;
-          const pool = isError ? errorRefs.current : artifactRefs.current;
-          const el = pool[Math.floor(Math.random() * pool.length)];
+        if (chaosState.phase !== "active") {
+          const delay = chaosState.phase === "warmup" ? 0.5 : 1.0;
+          gsap.delayedCall(delay, spawnElement);
+          return;
+        }
+        const isError = Math.random() > 0.4;
+        const pool = isError ? errorRefs.current : artifactRefs.current;
+        const el = pool[Math.floor(Math.random() * pool.length)];
 
-          if (el && (el.style.opacity === "0" || !el.style.opacity)) {
-            el.style.left = Math.random() * 100 + "%";
-            el.style.top = Math.random() * 100 + "%";
-            el.style.transform = "none"; // Clear any existing transform
-            el.style.zIndex = Math.random() > 0.5 ? 15 : 40;
+        if (el && (el.style.opacity === "0" || !el.style.opacity)) {
+          const angle = Math.random() * Math.PI * 2;
+          const radius = 15 + Math.random() * 25;
+          const center = 50;
+          el.style.left = (center + Math.cos(angle) * radius) + "%";
+          el.style.top = (center + Math.sin(angle) * radius) + "%";
+          el.style.transform = "none";
+          el.style.zIndex = Math.random() > 0.5 ? 15 : 40;
 
-            if (isError) {
-              const r = Math.random();
-              const msg =
-                r < 0.4
-                  ? errors.medium[
-                      Math.floor(Math.random() * errors.medium.length)
-                    ]
-                  : errors.short[
-                      Math.floor(Math.random() * errors.short.length)
-                    ];
-              el.innerText = msg;
+          if (isError) {
+            const r = Math.random();
+            const msg =
+              r < 0.4
+                ? errors.medium[
+                    Math.floor(Math.random() * errors.medium.length)
+                  ]
+                : errors.short[Math.floor(Math.random() * errors.short.length)];
+            el.innerText = msg;
 
-              el.style.fontSize =
-                (r < 0.4 ? Math.random() * 6 + 22 : Math.random() * 4 + 18) +
-                "px";
-              el.style.opacity = "1";
-              gsap.delayedCall(Math.random() * 1.0 + 0.6, () => {
-                el.style.opacity = "0";
-              });
-            } else {
-              el.style.width = Math.random() * 200 + 50 + "px";
-              el.style.height = Math.random() * 80 + 20 + "px";
-              el.style.opacity = "1";
-              gsap.delayedCall(Math.random() * 0.7 + 0.6, () => {
-                el.style.opacity = "0";
-              });
-            }
+            el.style.fontSize =
+              (r < 0.4 ? Math.random() * 6 + 22 : Math.random() * 4 + 18) +
+              "px";
+            el.style.opacity = "1";
+            gsap.delayedCall(Math.random() * 1.0 + 0.6, () => {
+              el.style.opacity = "0";
+            });
+          } else {
+            el.style.width = Math.random() * 200 + 50 + "px";
+            el.style.height = Math.random() * 80 + 20 + "px";
+            el.style.opacity = "1";
+            gsap.delayedCall(Math.random() * 0.7 + 0.6, () => {
+              el.style.opacity = "0";
+            });
           }
         }
         gsap.delayedCall(Math.random() * 0.1 + 0.1, spawnElement);
       };
 
-      spawnElement();
+      if (!isMobile) spawnElement();
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      window.removeEventListener("resize", onResize);
+      ctx.revert();
+    };
   }, []);
 
   const albumImages = [Album1, Album2, Album3, Album4, Album5, Album6];
 
   return (
     <div ref={containerRef} className="parallax-main-container">
-      <ParallaxBG />
+      <ParallaxBG renderRef={bgRenderRef} />
 
       <div className="parallax-viewport">
         <h1 ref={titleRef} className="parallax-main-title">
@@ -415,8 +450,9 @@ const Parallax = () => {
         <div
           ref={collapseRef}
           className="crt-container"
-          onMouseMove={handleTiltMove}
-          onMouseLeave={handleTiltLeave}
+          {...(isTouchDevice.current
+            ? {}
+            : { onMouseMove: handleTiltMove, onMouseLeave: handleTiltLeave })}
         >
           <div ref={tiltRef} className="crt-tilt-layer">
             <div
@@ -586,28 +622,6 @@ const Parallax = () => {
                             &gt; command
                           </span>
                         </div>
-                        <div
-                          className="terminal-qr-wrapper"
-                          onMouseEnter={() => {
-                            setHoveredSocial("linktree");
-                            soundManager.playHover();
-                          }}
-                          onMouseLeave={() => setHoveredSocial(null)}
-                        >
-                          <p className="terminal-qr-label">linktree</p>
-                          <a
-                            href="https://linktr.ee/agnet75"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="terminal-qr-link"
-                          >
-                            <img
-                              src={QRCode}
-                              alt="QR Linktree"
-                              className="terminal-qr-code"
-                            />
-                          </a>
-                        </div>
                       </div>
                       <div className="terminal-right">
                         <div
@@ -633,7 +647,6 @@ const Parallax = () => {
                             {hoveredSocial === "facebook" && <FacebookIcon />}
                             {hoveredSocial === "ko-fi" && <KofiIcon />}
                             {hoveredSocial === "command" && <ConsoleIcon />}
-                            {hoveredSocial === "linktree" && <LinktreeIcon />}
                             {hoveredSocial === "twitch" && <TwitchIcon />}
                           </div>
                         </div>

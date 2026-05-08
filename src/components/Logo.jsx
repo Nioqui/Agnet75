@@ -235,11 +235,6 @@ export default function JesterLogo({ eyeState = "NORMAL", ...props }) {
             interactionState.current === "IDLE" ||
             interactionState.current === "RETURNING"
           ) {
-            console.log(
-              "STATE CHANGE:",
-              interactionState.current,
-              "-> ENTERING",
-            );
             interactionState.current = "ENTERING";
             clearTimeout(idleTimer);
             clearTimeout(expressionTimer); // Stop random expressions
@@ -255,9 +250,6 @@ export default function JesterLogo({ eyeState = "NORMAL", ...props }) {
               overwrite: "auto",
               onComplete: () => {
                 if (interactionState.current === "ENTERING") {
-                  console.log(
-                    "STATE CHANGE: ENTERING -> TRACKING - Fresh quickTo initialized",
-                  );
                   interactionState.current = "TRACKING";
                   // ROOT CAUSE FIX: Re-initialize quickTo here to recover from potential overwrite: "auto" kills
                   xTo = gsap.quickTo(pupilRef.current, "x", {
@@ -290,11 +282,6 @@ export default function JesterLogo({ eyeState = "NORMAL", ...props }) {
             interactionState.current === "TRACKING" ||
             interactionState.current === "ENTERING"
           ) {
-            console.log(
-              "STATE CHANGE:",
-              interactionState.current,
-              "-> RETURNING",
-            );
             interactionState.current = "RETURNING";
 
             // Phase 3: Intentional reset
@@ -306,7 +293,6 @@ export default function JesterLogo({ eyeState = "NORMAL", ...props }) {
               overwrite: "auto",
               onComplete: () => {
                 if (interactionState.current === "RETURNING") {
-                  console.log("STATE CHANGE: RETURNING -> IDLE");
                   interactionState.current = "IDLE";
                   // Phase 4: Think shortly, then regain autonomy
                   clearTimeout(idleTimer);
