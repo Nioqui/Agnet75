@@ -93,7 +93,6 @@ const Parallax = () => {
     tiltRef.current.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
   };
 
-  const bgRenderRef = useRef(null);
   const glitchTimeoutRef = useRef(null);
   const isTouchDevice = useRef(
     typeof window !== "undefined" && "ontouchstart" in window,
@@ -191,13 +190,6 @@ const Parallax = () => {
             document.body.classList.remove("stars-static");
           }
 
-          // --- THEME COLOR ---
-          const themeColor = progress < 0.48 ? "#0d0d0d" : progress < 0.65 ? "#1a0b2e" : "#000000";
-          const meta = document.querySelector('meta[name="theme-color"]');
-          if (meta && meta.getAttribute("content") !== themeColor) {
-            meta.setAttribute("content", themeColor);
-          }
-
           // --- TITLE (0.15 → 0.6) ---
           if (titleRef.current) {
             const holdStart = 0.15;
@@ -207,19 +199,19 @@ const Parallax = () => {
               titleOpacity = 1;
 
             if (progress < holdStart) {
-              titleY = -60 + (progress / holdStart) * 60;
+              titleY = -60 + (progress / holdStart) * 110;
             } else if (progress < holdEnd) {
-              titleY = 0;
+              titleY = 50;
             } else {
               const t = Math.max(
                 0,
                 Math.min(1, (progress - holdEnd) / (titleExitEnd - holdEnd)),
               );
               const easeT = titleEase(t);
-              titleY = 0 + easeT * -190;
+              titleY = 50 + easeT * -300;
               titleOpacity = 1 - easeT;
             }
-            titleRef.current.style.transform = `translate(-50%, calc(-50% + ${titleY}vh))`;
+            titleRef.current.style.transform = `translate(-50%, ${titleY}vh)`;
             titleRef.current.style.opacity = titleOpacity;
           }
 
@@ -233,11 +225,8 @@ const Parallax = () => {
             if (chaosLogoRef.current) {
               const intensity = cOpacity;
               if (isMobile) {
-                const jx = (Math.random() - 0.5) * 3 * intensity;
-                const jy = (Math.random() - 0.5) * 3 * intensity;
-                const js = 1 + (Math.random() - 0.5) * 0.02 * intensity;
                 chaosLogoRef.current.style.opacity = cOpacity;
-                chaosLogoRef.current.style.transform = `translate(-50%, -50%) translate(${jx}px, ${jy}px) scale(${js})`;
+                chaosLogoRef.current.style.transform = `translate(-50%, -50%) scale(${1 + cOpacity * 0.03})`;
               } else {
                 const logoFlicker = Math.random() < 0.9 * intensity ? 0 : 1;
                 const jx = (Math.random() - 0.5) * 8 * intensity;
@@ -317,9 +306,6 @@ const Parallax = () => {
             album.style.opacity =
               adjustedProgress > 0 && adjustedProgress < 1 ? 1 : 0;
           });
-
-          // --- BACKGROUND RENDER ---
-          bgRenderRef.current?.(progress);
         },
       });
       const errors = {
@@ -339,11 +325,11 @@ const Parallax = () => {
         ],
       };
 
-      let spawnCount = 0;
       const spawnElement = () => {
         if (chaosState.phase !== "active") {
-          const delay = chaosState.phase === "warmup" ? 0.5 : 1.0;
-          gsap.delayedCall(delay, spawnElement);
+          if (chaosState.phase === "shutdown" || chaosState.phase === "off")
+            return;
+          gsap.delayedCall(0.3, spawnElement);
           return;
         }
         const isError = Math.random() > 0.4;
@@ -351,11 +337,8 @@ const Parallax = () => {
         const el = pool[Math.floor(Math.random() * pool.length)];
 
         if (el && (el.style.opacity === "0" || !el.style.opacity)) {
-          const angle = Math.random() * Math.PI * 2;
-          const radius = 15 + Math.random() * 25;
-          const center = 50;
-          el.style.left = (center + Math.cos(angle) * radius) + "%";
-          el.style.top = (center + Math.sin(angle) * radius) + "%";
+          el.style.left = Math.random() * 100 + "%";
+          el.style.top = Math.random() * 100 + "%";
           el.style.transform = "none";
           el.style.zIndex = Math.random() > 0.5 ? 15 : 40;
 
@@ -388,7 +371,7 @@ const Parallax = () => {
         gsap.delayedCall(Math.random() * 0.1 + 0.1, spawnElement);
       };
 
-      if (!isMobile) spawnElement();
+      spawnElement();
     }, containerRef);
 
     return () => {
@@ -401,7 +384,7 @@ const Parallax = () => {
 
   return (
     <div ref={containerRef} className="parallax-main-container">
-      <ParallaxBG renderRef={bgRenderRef} />
+      <ParallaxBG />
 
       <div className="parallax-viewport">
         <h1 ref={titleRef} className="parallax-main-title">
