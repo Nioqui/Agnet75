@@ -93,12 +93,17 @@ const Parallax = () => {
     tiltRef.current.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
   };
 
+  const bgRenderRef = useRef(null);
   const glitchTimeoutRef = useRef(null);
   const isTouchDevice = useRef(
     typeof window !== "undefined" && "ontouchstart" in window,
   );
+  const isMobile = useRef(
+    typeof window !== "undefined" && window.innerWidth < 768,
+  );
 
   useEffect(() => {
+    if (isMobile.current) return;
     let isMounted = true;
     const triggerRandomGlitch = () => {
       if (!isMounted) return;
@@ -174,7 +179,7 @@ const Parallax = () => {
           }
 
           // --- GLITCH EFFECT ---
-          if (progress >= 0.65 && Math.random() > 0.97 && screenRef.current) {
+          if (!isMobile && progress >= 0.65 && Math.random() > 0.97 && screenRef.current) {
             screenRef.current.classList.add("glitch");
             gsap.killTweensOf(screenRef.current);
             gsap.delayedCall(0.12, () => {
@@ -199,19 +204,19 @@ const Parallax = () => {
               titleOpacity = 1;
 
             if (progress < holdStart) {
-              titleY = -60 + (progress / holdStart) * 110;
+              titleY = -60 + (progress / holdStart) * 60;
             } else if (progress < holdEnd) {
-              titleY = 50;
+              titleY = 0;
             } else {
               const t = Math.max(
                 0,
                 Math.min(1, (progress - holdEnd) / (titleExitEnd - holdEnd)),
               );
               const easeT = titleEase(t);
-              titleY = 50 + easeT * -300;
+              titleY = 0 + easeT * -190;
               titleOpacity = 1 - easeT;
             }
-            titleRef.current.style.transform = `translate(-50%, ${titleY}vh)`;
+            titleRef.current.style.transform = `translate(-50%, calc(-50% + ${titleY}vh))`;
             titleRef.current.style.opacity = titleOpacity;
           }
 
@@ -278,7 +283,7 @@ const Parallax = () => {
               }
 
               // Phase Glitch Transition (very short flicker between reboot and UI)
-              if (progress >= 0.755 && progress <= 0.765 && screenRef.current) {
+              if (!isMobile && progress >= 0.755 && progress <= 0.765 && screenRef.current) {
                 screenRef.current.classList.add("glitch-transition");
               } else if (screenRef.current) {
                 screenRef.current.classList.remove("glitch-transition");
@@ -306,6 +311,9 @@ const Parallax = () => {
             album.style.opacity =
               adjustedProgress > 0 && adjustedProgress < 1 ? 1 : 0;
           });
+
+          // --- BACKGROUND RENDER ---
+          bgRenderRef.current?.(progress);
         },
       });
       const errors = {
@@ -327,8 +335,7 @@ const Parallax = () => {
 
       const spawnElement = () => {
         if (chaosState.phase !== "active") {
-          if (chaosState.phase === "shutdown" || chaosState.phase === "off")
-            return;
+          if (chaosState.phase === "shutdown") return;
           gsap.delayedCall(0.3, spawnElement);
           return;
         }
@@ -371,7 +378,7 @@ const Parallax = () => {
         gsap.delayedCall(Math.random() * 0.1 + 0.1, spawnElement);
       };
 
-      spawnElement();
+      if (!isMobile) spawnElement();
     }, containerRef);
 
     return () => {
@@ -384,7 +391,7 @@ const Parallax = () => {
 
   return (
     <div ref={containerRef} className="parallax-main-container">
-      <ParallaxBG />
+      <ParallaxBG renderRef={bgRenderRef} />
 
       <div className="parallax-viewport">
         <h1 ref={titleRef} className="parallax-main-title">

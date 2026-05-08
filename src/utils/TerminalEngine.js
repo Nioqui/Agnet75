@@ -52,6 +52,8 @@ class TerminalEngine {
         return this.handleDecode(args);
       case "execute":
         return this.handleExecute(args);
+      case "melon":
+        return ">> you're bald and we love u";
       default:
         return "Unknown command. Type 'help' to see available commands.";
     }

@@ -56,12 +56,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // 1. Logo Section Fade & Blur Out
     const logoSectionTl = gsap.timeline({
       scrollTrigger: {
         trigger: "#logo-section",
-        start: "bottom 90%", // Start early before it leaves
-        end: "bottom 10%", // Fully blurred near the top
+        start: "bottom 90%",
+        end: "bottom 10%",
         scrub: 1,
       },
     });
@@ -73,27 +72,10 @@ function App() {
       ease: "power1.inOut",
     });
 
-    // 2. Parallax Section Fade & Slide In
-    gsap.fromTo(
-      ".parallax-container",
-      {
-        opacity: 0,
-        y: 80,
-        filter: "blur(4px)", // Slight blur on entry to match depth
-      },
-      {
-        opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".parallax-container",
-          start: "top 95%", // Start very early
-          end: "top 40%", // Finish in the middle
-          scrub: 0.8,
-        },
-      },
-    );
+    return () => {
+      logoSectionTl.scrollTrigger?.kill();
+      logoSectionTl.kill();
+    };
   }, []);
 
   return (
@@ -146,19 +128,11 @@ function App() {
         </div>
         <div id="logo-section">
           <div className="section-title" id="main-content">
-            <p>
+            <div>
               {!showIntro && (
-                <TextTypeCFG
-                  text="every song tells a story..."
-                  className="scroll-reveal-text scroll-reveal"
-                  delay={100}
-                  animationFrom={{ opacity: 0, filter: "blur(15px)" }}
-                  animationTo={{ opacity: 1, filter: "blur(0px)" }}
-                  threshold={0.2}
-                  rootMargin="-300px"
-                />
+                <TextTypeCFG />
               )}
-            </p>
+            </div>
           </div>
           <section className="reveal-section">
             <div className="section-layout">

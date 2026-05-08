@@ -6,19 +6,30 @@
 class SoundManager {
   constructor() {
     this.context = null;
-    // Load preference from localStorage or default to true
     const saved = localStorage.getItem("system_sfx_enabled");
     this.enabled = saved !== null ? saved === "true" : true;
-    this.volume = 0.04; // Very subtle default
+    this.volume = 0.04;
+    this._setupWakeListeners();
   }
 
-  init() {
-    if (this.context) return;
-    try {
-      this.context = new (window.AudioContext || window.webkitAudioContext)();
-    } catch (e) {
-      console.warn("Web Audio API not supported");
-    }
+  _setupWakeListeners() {
+    if (typeof window === "undefined") return;
+    const wake = () => {
+      if (!this.context) {
+        try {
+          this.context = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) { return; }
+      }
+      if (this.context.state === "suspended") {
+        this.context.resume();
+      }
+      document.removeEventListener("mousedown", wake);
+      document.removeEventListener("touchstart", wake);
+      document.removeEventListener("keydown", wake);
+    };
+    document.addEventListener("mousedown", wake, { once: true });
+    document.addEventListener("touchstart", wake, { once: true });
+    document.addEventListener("keydown", wake, { once: true });
   }
 
   toggle(state) {
@@ -36,10 +47,10 @@ class SoundManager {
    */
   playHover() {
     if (!this.enabled) return;
-    this.init();
-    
-    if (this.context.state === 'suspended') {
-      this.context.resume();
+    if (!this.context) {
+      try {
+        this.context = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) { return; }
     }
 
     const osc = this.context.createOscillator();
@@ -64,12 +75,11 @@ class SoundManager {
    */
   playTypeClick() {
     if (!this.enabled) return;
-    this.init();
-    
-    if (this.context.state === 'suspended') {
-      this.context.resume();
+    if (!this.context) {
+      try {
+        this.context = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) { return; }
     }
-
     const osc = this.context.createOscillator();
     const gain = this.context.createGain();
     

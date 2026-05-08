@@ -69,7 +69,7 @@ body {
 }
 
 .hero-logo {
-  width: clamp(280px, 55vw, 900px);
+  width: clamp(200px, 55vw, 900px);
   display: block;
   filter: drop-shadow(0 0 40px rgba(117, 37, 171, 0.25));
 }
@@ -81,19 +81,18 @@ body {
 }
 
 .hero-subtitle {
-  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
-  font-size: 22px;
+  font-size: clamp(0.85rem, 2.5vw, 1.2rem);
   font-weight: 400;
   color: #fff;
   text-align: center;
-  line-height: 2;
+  line-height: 1.6;
   letter-spacing: 0.02em;
-  max-width: 600px; /* Limits width to form a block */
+  max-width: min(90vw, 600px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 0px;
+  gap: 4px;
   font-family: "bree serif", serif;
 }
 

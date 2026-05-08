@@ -78,7 +78,8 @@ const TextType = ({
 
   // Cursor Animation
   useEffect(() => {
-    if (showCursor && cursorRef.current) {
+    if (!showCursor || !cursorRef.current) return;
+    const ctx = gsap.context(() => {
       gsap.to(cursorRef.current, {
         opacity: 0,
         duration: cursorBlinkDuration,
@@ -86,7 +87,8 @@ const TextType = ({
         yoyo: true,
         ease: "power2.inOut",
       });
-    }
+    });
+    return () => ctx.revert();
   }, [showCursor, cursorBlinkDuration]);
 
   // Typing logic
