@@ -65,7 +65,7 @@ class TerminalEngine {
       "",
       "help        → shows available commands",
       "mailbox    → opens mailbox / message archive",
-      "decode      → decodes encoded data (binary / base64)",
+      "decode      → decodes encoded data (--binary / --base64)",
       "execute     → runs system actions using flags (--command)",
     ].join("\n");
   }
